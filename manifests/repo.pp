@@ -6,6 +6,7 @@ define opengrok::repo($git_url) {
       cwd     => "${opengrok::dirs::base_path}/source",
       path    => ['/bin', '/usr/bin'],
       unless  => "test -d ${opengrok::dirs::base_path}/source/${name}",
+      timeout => 0,
       notify  => [
         Service['tomcat7'],
         Exec['opengrok-reindex']],
