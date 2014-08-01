@@ -18,7 +18,7 @@ class opengrok {
       command     => '/var/opengrok/bin/opengrok-indexer',
       path        => ['/usr/bin'],
       timeout     => 0,
-      notify      => Service['tomcat6'],
+      notify      => Service['tomcat7'],
       require     => File['/var/opengrok/bin/opengrok-indexer'];
   }
 

@@ -1,14 +1,42 @@
-class opengrok::files {
+class opengrok::files (
+  $version="0.12.1",
+  $url="http://java.net/projects/opengrok/downloads/download/",
+) {
   $bin_path = '/var/opengrok/bin'
+
+  $folder="opengrok-${version}"
+  $tarball="${folder}.tar.gz"
+  $download_url="${url}/${tarball}"
+
+  exec {
+    'download opengrok':
+      command => "/usr/bin/wget ${download_url}",
+      cwd     => $bin_path,
+      creates => "${bin_path}/${tarball}",
+      require => File[$bin_path];
+  }
+
+  exec {
+    'untar opengrok':
+      command     => "/bin/tar xzf ${tarball}",
+      refreshonly => true,
+      cwd         => $bin_path,
+      creates     => "${bin_path}/${folder}",
+      subscribe   => Exec['download opengrok'],
+  }
 
   file {
     "${bin_path}/OpenGrok" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/OpenGrok';
+      ensure => link,
+      target => "${bin_path}/${folder}/bin/OpenGrok";
+
+    "${bin_path}/source.war" :
+      ensure => link,
+      target => "${bin_path}/${folder}/lib/source.war";
 
     "${bin_path}/opengrok.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/opengrok.jar';
+      ensure => link,
+      target => "${bin_path}/${folder}/lib/opengrok.jar";
 
     "${bin_path}/opengrok-indexer" :
       ensure  => present,
@@ -18,29 +46,9 @@ class opengrok::files {
       ensure  => present,
       source  => 'puppet:///modules/opengrok/bin/opengrok-update';
 
-    "${bin_path}/lib/ant.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/ant.jar';
-
-    "${bin_path}/lib/bcel-5.2.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/bcel-5.2.jar';
-
-    "${bin_path}/lib/jrcs.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/jrcs.jar';
-
-    "${bin_path}/lib/lucene-core-3.0.2.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/lucene-core-3.0.2.jar';
-
-    "${bin_path}/lib/lucene-spellchecker-3.0.2.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/lucene-spellchecker-3.0.2.jar';
-
-    "${bin_path}/lib/swing-layout-0.9.jar" :
-      ensure  => present,
-      source  => 'puppet:///modules/opengrok/bin/lib/swing-layout-0.9.jar';
+    "${bin_path}/lib":
+      ensure => link,
+      target => "${bin_path}/${folder}/lib/lib";
 
   }
 }

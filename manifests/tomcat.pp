@@ -1,21 +1,25 @@
-class opengrok::tomcat {
+class opengrok::tomcat (
+  $version=7
+) {
+  require opengrok::files
+  $name="tomcat${version}"
   package {
-    ['tomcat6', 'tomcat6-admin'] :
+    [$name, "${name}-admin"] :
       ensure => present;
   }
 
   file {
-    '/var/lib/tomcat6/webapps/source.war' :
+    "/var/lib/${name}/webapps/source.war" :
       ensure  => present,
-      require => Package['tomcat6'],
-      notify  => Service['tomcat6'],
-      source  => 'puppet:///modules/opengrok/source.war';
+      require => [Package[$name],File["${opengrok::files::bin_path}/source.war"]],
+      notify  => Service[$name],
+      source  => "${opengrok::files::bin_path}/source.war";
   }
 
   service {
-    'tomcat6' :
+    'tomcat7' :
       hasrestart => true,
       hasstatus  => true,
-      require    => Package['tomcat6'];
+      require    => Package[$name];
   }
 }
