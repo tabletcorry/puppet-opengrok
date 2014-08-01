@@ -2,17 +2,17 @@ class opengrok::tomcat (
   $version=7
 ) {
   require opengrok::files
-  $name="tomcat${version}"
+  $tname="tomcat${version}"
   package {
-    [$name, "${name}-admin"] :
+    [$tname, "${tname}-admin"] :
       ensure => present;
   }
 
   file {
-    "/var/lib/${name}/webapps/source.war" :
+    "/var/lib/${tname}/webapps/source.war" :
       ensure  => present,
-      require => [Package[$name],File["${opengrok::files::bin_path}/source.war"]],
-      notify  => Service[$name],
+      require => [Package[$tname],File["${opengrok::files::bin_path}/source.war"]],
+      notify  => Service[$tname],
       source  => "${opengrok::files::bin_path}/source.war";
   }
 
@@ -20,6 +20,6 @@ class opengrok::tomcat (
     'tomcat7' :
       hasrestart => true,
       hasstatus  => true,
-      require    => Package[$name];
+      require    => Package[$tname];
   }
 }
