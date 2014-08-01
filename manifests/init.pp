@@ -1,7 +1,13 @@
-class opengrok {
+class opengrok (
+  $repos
+) {
   package {
     ['exuberant-ctags', 'git-core'] :
       ensure => present;
+  }
+
+  opengrok::repo {
+    $repos:
   }
 
   class {
