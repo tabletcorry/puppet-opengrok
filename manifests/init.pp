@@ -6,9 +6,7 @@ class opengrok (
       ensure => present;
   }
 
-  opengrok::repo {
-    $repos:
-  }
+  create_resources(opengrok::repo, $repos)
 
   class {
     'opengrok::dirs' : ;
