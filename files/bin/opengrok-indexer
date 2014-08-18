@@ -8,4 +8,5 @@ java -Xmx7048m -jar ${BASE_DIR}/bin/opengrok.jar \
           -S \
           -v \
           -s ${BASE_DIR}/source \
-          -d ${BASE_DIR}/data
+          -d ${BASE_DIR}/data \
+          -U localhost:2424
