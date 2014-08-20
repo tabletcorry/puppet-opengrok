@@ -6,4 +6,4 @@ for d in ${BASE_DIR}/*; do
   (cd $d && if [ -d .git ]; then git pull --rebase; fi)
 done
 
-/var/opengrok/bin/opengrok-indexer
+nice -n 19 /var/opengrok/bin/opengrok-indexer
